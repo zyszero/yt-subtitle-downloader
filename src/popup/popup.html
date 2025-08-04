@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube 字幕下载器</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">📹</div>
+                <div class="logo-text">字幕下载器</div>
+            </div>
+            <div class="status" id="status">
+                <span class="status-dot" id="statusDot"></span>
+                <span class="status-text" id="statusText">准备就绪</span>
+            </div>
+        </header>
+
+        <!-- 快速操作 -->
+        <section class="quick-actions">
+            <button id="openSidePanelBtn" class="btn btn-primary">
+                <span class="btn-icon">🎛️</span>
+                <span class="btn-text">打开侧边栏</span>
+            </button>
+            <button id="downloadCurrentBtn" class="btn btn-secondary">
+                <span class="btn-icon">⬇️</span>
+                <span class="btn-text">快速下载</span>
+            </button>
+        </section>
+
+        <!-- 当前页面信息 -->
+        <section class="page-info" id="pageInfo">
+            <h3>当前页面</h3>
+            <div class="page-details" id="pageDetails">
+                <div class="page-status" id="pageStatus">检测中...</div>
+                <div class="video-info" id="videoInfo" style="display: none;">
+                    <div class="video-title" id="videoTitle">视频标题</div>
+                    <div class="video-stats">
+                        <span class="stat" id="videoLang">语言: --</span>
+                        <span class="stat" id="videoDuration">时长: --</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 快速设置 -->
+        <section class="quick-settings">
+            <h3>快速设置</h3>
+            
+            <div class="setting-item">
+                <label for="defaultFormat">默认格式:</label>
+                <select id="defaultFormat" class="select-input">
+                    <option value="srt">SRT</option>
+                    <option value="vtt">WebVTT</option>
+                    <option value="txt">纯文本</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label for="defaultLanguage">默认语言:</label>
+                <select id="defaultLanguage" class="select-input">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="autoDownload">
+                    <span>自动下载</span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="bilingualMode">
+                    <span>双语模式</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 统计信息 -->
+        <section class="stats">
+            <h3>统计信息</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalDownloads">0</div>
+                    <div class="stat-label">下载</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalVideos">0</div>
+                    <div class="stat-label">视频</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="successRate">100%</div>
+                    <div class="stat-label">成功率</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 快速链接 -->
+        <section class="quick-links">
+            <h3>快速链接</h3>
+            <div class="links-grid">
+                <a href="#" id="settingsLink" class="link-item">
+                    <span class="link-icon">⚙️</span>
+                    <span class="link-text">设置</span>
+                </a>
+                <a href="#" id="helpLink" class="link-item">
+                    <span class="link-icon">❓</span>
+                    <span class="link-text">帮助</span>
+                </a>
+                <a href="#" id="feedbackLink" class="link-item">
+                    <span class="link-icon">💬</span>
+                    <span class="link-text">反馈</span>
+                </a>
+                <a href="#" id="aboutLink" class="link-item">
+                    <span class="link-icon">ℹ️</span>
+                    <span class="link-text">关于</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 消息区域 -->
+        <div id="messageArea" class="message-area"></div>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+</body>
+</html>

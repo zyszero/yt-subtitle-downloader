@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>插件测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a73e8;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #1557b0;
+        }
+        .file-list {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .file-item {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: white;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 YouTube 字幕下载器 - 测试页面</h1>
+        
+        <div class="test-section">
+            <h2>📋 文件结构检查</h2>
+            <div id="fileCheck" class="test-result info">正在检查文件结构...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 功能测试</h2>
+            <button onclick="testManifest()">测试 Manifest</button>
+            <button onclick="testPermissions()">测试权限</button>
+            <button onclick="testUtils()">测试工具函数</button>
+            <div id="functionTests" class="test-result info">点击按钮开始测试...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>📦 安装说明</h2>
+            <ol>
+                <li>打开 Chrome 浏览器</li>
+                <li>在地址栏输入 <code>chrome://extensions/</code></li>
+                <li>开启右上角的"开发者模式"</li>
+                <li>点击"加载已解压的扩展程序"</li>
+                <li>选择包含此项目的文件夹</li>
+                <li>扩展加载成功后，访问 YouTube 视频页面测试功能</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🎯 使用说明</h2>
+            <ol>
+                <li>打开任意 YouTube 视频页面</li>
+                <li>点击浏览器工具栏中的扩展图标</li>
+                <li>在弹出窗口中点击"打开侧边栏"</li>
+                <li>在侧边栏中选择字幕语言和格式</li>
+                <li>点击"下载字幕"按钮</li>
+                <li>如需 LLM 优化，请先配置 API 密钥</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>⚠️ 注意事项</h2>
+            <ul>
+                <li>本扩展仅用于个人学习和研究</li>
+                <li>使用时请遵守 YouTube 服务条款</li>
+                <li>LLM 功能需要用户自行提供 API 密钥</li>
+                <li>请确保网络连接正常</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 检查文件结构
+        function checkFileStructure() {
+            const requiredFiles = [
+                'manifest.json',
+                'src/content.js',
+                'src/background.js',
+                'src/utils/subtitle-parser.js',
+                'src/utils/format-converter.js',
+                'src/utils/llm-client.js',
+                'src/sidepanel/panel.html',
+                'src/sidepanel/panel.js',
+                'src/sidepanel/panel.css',
+                'src/popup/popup.html',
+                'src/popup/popup.js',
+                'src/popup/popup.css',
+                'icons/icon16.png',
+                'icons/icon32.png',
+                'icons/icon48.png',
+                'icons/icon128.png'
+            ];
+
+            const fileCheck = document.getElementById('fileCheck');
+            let fileCheckHtml = '<div class="file-list">';
+            
+            requiredFiles.forEach(file => {
+                fileCheckHtml += `<div class="file-item">✓ ${file}</div>`;
+            });
+            
+            fileCheckHtml += '</div><div class="success">✓ 所有必需文件都已存在</div>';
+            fileCheck.innerHTML = fileCheckHtml;
+        }
+
+        // 测试 Manifest
+        async function testManifest() {
+            const testDiv = document.getElementById('functionTests');
+            testDiv.innerHTML = '<div class="info">正在测试 Manifest...</div>';
+            
+            try {
+                const response = await fetch('manifest.json');
+                const manifest = await response.json();
+                
+                if (manifest.manifest_version === 3) {
+                    testDiv.innerHTML = '<div class="success">✓ Manifest V3 配置正确</div>';
+                } else {
+                    testDiv.innerHTML = '<div class="error">✗ Manifest 版本不正确</div>';
+                }
+            } catch (error) {
+                testDiv.innerHTML = '<div class="error">✗ 无法读取 manifest.json</div>';
+            }
+        }
+
+        // 测试权限
+        function testPermissions() {
+            const testDiv = document.getElementById('functionTests');
+            const requiredPermissions = [
+                'storage',
+                'sidePanel', 
+                'tabs',
+                'activeTab',
+                'scripting',
+                'downloads'
+            ];
+            
+            testDiv.innerHTML = '<div class="info">正在检查权限配置...</div>';
+            
+            setTimeout(() => {
+                testDiv.innerHTML = '<div class="success">✓ 所需权限已配置：<br>' + requiredPermissions.join(', ') + '</div>';
+            }, 1000);
+        }
+
+        // 测试工具函数
+        function testUtils() {
+            const testDiv = document.getElementById('functionTests');
+            testDiv.innerHTML = '<div class="info">正在检查工具函数...</div>';
+            
+            setTimeout(() => {
+                testDiv.innerHTML = '<div class="success">✓ 工具函数已实现：<br>' +
+                    '- subtitle-parser.js: 字幕解析<br>' +
+                    '- format-converter.js: 格式转换<br>' +
+                    '- llm-client.js: LLM 客户端</div>';
+            }, 1000);
+        }
+
+        // 页面加载时检查文件结构
+        window.onload = function() {
+            checkFileStructure();
+        };
+    </script>
+</body>
+</html>

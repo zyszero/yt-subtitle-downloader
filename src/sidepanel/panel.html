@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube 字幕下载器</title>
+    <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <h1 class="title">字幕下载器</h1>
+            <div class="status" id="status">
+                <span class="status-indicator" id="statusIndicator"></span>
+                <span class="status-text" id="statusText">准备就绪</span>
+            </div>
+        </header>
+
+        <!-- 视频信息 -->
+        <section class="video-info" id="videoInfo" style="display: none;">
+            <h2>视频信息</h2>
+            <div class="video-details">
+                <div class="video-title" id="videoTitle">视频标题</div>
+                <div class="video-meta">
+                    <span id="videoAuthor">作者</span> • 
+                    <span id="videoDuration">时长</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 字幕设置 -->
+        <section class="subtitle-settings">
+            <h2>字幕设置</h2>
+            
+            <div class="form-group">
+                <label for="languageSelect">字幕语言:</label>
+                <select id="languageSelect" class="select-input">
+                    <option value="">正在加载...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="formatSelect">输出格式:</label>
+                <select id="formatSelect" class="select-input">
+                    <option value="srt">SRT</option>
+                    <option value="vtt">WebVTT</option>
+                    <option value="txt">纯文本</option>
+                    <option value="json">JSON</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="bilingualMode">
+                    <span>双语模式</span>
+                </label>
+            </div>
+
+            <div class="form-group" id="translateGroup" style="display: none;">
+                <label for="translateLanguage">翻译为:</label>
+                <select id="translateLanguage" class="select-input">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                    <option value="ja">日本語</option>
+                    <option value="ko">한국어</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                    <option value="ru">Русский</option>
+                </select>
+            </div>
+
+            <button id="downloadBtn" class="btn btn-primary" disabled>
+                <span class="btn-text">下载字幕</span>
+                <span class="btn-loading" style="display: none;">处理中...</span>
+            </button>
+        </section>
+
+        <!-- LLM 优化 -->
+        <section class="llm-section">
+            <h2>LLM 智能优化</h2>
+            
+            <div class="llm-provider">
+                <div class="form-group">
+                    <label for="llmProvider">服务提供商:</label>
+                    <select id="llmProvider" class="select-input">
+                        <option value="">请选择</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="anthropic">Anthropic</option>
+                    </select>
+                </div>
+
+                <div class="llm-config" id="llmConfig" style="display: none;">
+                    <div class="form-group">
+                        <label for="apiKey">API Key:</label>
+                        <input type="password" id="apiKey" class="text-input" placeholder="输入您的API密钥">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model">模型:</label>
+                        <select id="model" class="select-input">
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="baseUrl">服务地址:</label>
+                        <input type="url" id="baseUrl" class="text-input" placeholder="默认地址">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enableOptimization">
+                            <span>启用字幕优化</span>
+                        </label>
+                    </div>
+
+                    <div class="config-actions">
+                        <button id="testConnectionBtn" class="btn btn-secondary">测试连接</button>
+                        <button id="saveConfigBtn" class="btn btn-primary">保存配置</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="llm-actions" id="llmActions" style="display: none;">
+                <div class="form-group">
+                    <label for="optimizeStyle">优化风格:</label>
+                    <select id="optimizeStyle" class="select-input">
+                        <option value="natural">自然流畅</option>
+                        <option value="formal">正式规范</option>
+                        <option value="casual">轻松口语</option>
+                        <option value="academic">学术严谨</option>
+                    </select>
+                </div>
+
+                <button id="optimizeBtn" class="btn btn-accent" disabled>
+                    <span class="btn-text">优化字幕</span>
+                    <span class="btn-loading" style="display: none;">优化中...</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 字幕预览 -->
+        <section class="subtitle-preview" id="subtitlePreview" style="display: none;">
+            <h2>字幕预览</h2>
+            <div class="preview-controls">
+                <button id="copyBtn" class="btn btn-secondary">复制</button>
+                <button id="editBtn" class="btn btn-secondary">编辑</button>
+                <button id="refreshBtn" class="btn btn-secondary">刷新</button>
+            </div>
+            <div class="preview-content" id="previewContent">
+                <div class="preview-placeholder">字幕内容将在这里显示</div>
+            </div>
+        </section>
+
+        <!-- 设置 -->
+        <section class="settings">
+            <h2>设置</h2>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="showNotifications">
+                    <span>显示通知</span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="autoDetectLanguage">
+                    <span>自动检测语言</span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="maxSubtitles">最大字幕数量:</label>
+                <input type="number" id="maxSubtitles" class="number-input" min="100" max="2000" value="500">
+            </div>
+
+            <div class="settings-actions">
+                <button id="resetSettingsBtn" class="btn btn-secondary">重置设置</button>
+                <button id="exportSettingsBtn" class="btn btn-secondary">导出设置</button>
+            </div>
+        </section>
+
+        <!-- 统计信息 -->
+        <section class="stats">
+            <h2>统计信息</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalDownloads">0</div>
+                    <div class="stat-label">总下载次数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalOptimized">0</div>
+                    <div class="stat-label">优化次数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="apiCalls">0</div>
+                    <div class="stat-label">API调用次数</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于 -->
+        <section class="about">
+            <h2>关于</h2>
+            <div class="about-content">
+                <p>YouTube 字幕下载器 v1.0.0</p>
+                <p>一个功能强大的YouTube字幕下载和优化工具</p>
+                <div class="about-links">
+                    <a href="#" id="helpLink">使用帮助</a>
+                    <a href="#" id="feedbackLink">意见反馈</a>
+                    <a href="#" id="updateLink">检查更新</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 加载脚本 -->
+    <script type="module" src="panel.js"></script>
+</body>
+</html>

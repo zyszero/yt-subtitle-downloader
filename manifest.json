@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube 字幕下载器",
+  "version": "1.0.0",
+  "description": "一个功能强大的YouTube字幕下载工具，支持单语、双语字幕下载和LLM优化",
+  "permissions": [
+    "storage",
+    "sidePanel",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "downloads"
+  ],
+  "host_permissions": [
+    "*://www.youtube.com/*",
+    "*://*.youtube.com/*",
+    "*://*.openai.com/*",
+    "*://*.anthropic.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.youtube.com/*",
+        "*://*.youtube.com/*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_title": "YouTube 字幕下载器",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "src/sidepanel/panel.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["src/utils/*"],
+      "matches": ["*://www.youtube.com/*"]
+    }
+  ]
+}
